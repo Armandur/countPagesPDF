@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Author: Rasmus Pettersson Vik
-# Version: 1.0.0
+# Version: 1.0.1
 
 import argparse
 import sys
@@ -39,11 +39,14 @@ def main(argv):
         print("Pages\tFile")
 
     for file in files:
-        with open(file, 'rb') as pdf:
-            current = PyPDF2.PdfFileReader(file, strict=False).numPages
-            total += current
-            if not args.total:
-                print(f"{current}\t{file}")
+        try:
+            with open(file, 'rb') as pdf:
+                current = len(PyPDF2.PdfFileReader(file, strict=False).pages)
+                total += current
+                if not args.total:
+                    print(f"{current}\t{file}")
+        except IOError as e:
+            print(e, file=sys.stderr)
     print(total)
 
 if __name__ == '__main__':
